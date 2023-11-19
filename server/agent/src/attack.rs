@@ -2992,7 +2992,7 @@ impl<'a> AgentData<'a> {
         read_data: &ReadData,
         _rng: &mut impl Rng,
     ) {
-        const PHOENIX_HEAL_THRESHOLD: f32 = 0.10;
+        const PHOENIX_HEAL_THRESHOLD: f32 = 0.20;
 
         enum Conditions {
             Healed = 0,
