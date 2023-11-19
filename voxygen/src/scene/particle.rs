@@ -1112,8 +1112,8 @@ impl ParticleMgr {
                                 self.particles.resize_with(
                                     self.particles.len()
                                         + 2 * usize::from(
-                                        self.scheduler.heartbeats(Duration::from_millis(25)),
-                                    ),
+                                            self.scheduler.heartbeats(Duration::from_millis(25)),
+                                        ),
                                     || {
                                         let rand_pos = {
                                             let theta = rng.gen::<f32>() * TAU;
@@ -1148,8 +1148,8 @@ impl ParticleMgr {
                                 self.particles.resize_with(
                                     self.particles.len()
                                         + 2 * usize::from(
-                                        self.scheduler.heartbeats(Duration::from_millis(25)),
-                                    ),
+                                            self.scheduler.heartbeats(Duration::from_millis(25)),
+                                        ),
                                     || {
                                         let rand_pos = {
                                             let theta = rng.gen::<f32>() * TAU;
