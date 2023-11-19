@@ -59,7 +59,7 @@ pub enum ProjectileConstructor {
         knockback: f32,
         energy_regen: f32,
     },
-    Droplet {
+    FireDroplet {
         damage: f32,
         radius: f32,
         energy_regen: f32,
@@ -260,7 +260,7 @@ impl ProjectileConstructor {
                     is_point: true,
                 }
             },
-            Droplet {
+            FireDroplet {
                 damage,
                 radius,
                 energy_regen,
@@ -972,7 +972,7 @@ impl ProjectileConstructor {
                 *damage *= power;
                 *energy_regen *= regen;
             },
-            Droplet {
+            FireDroplet {
                 ref mut damage,
                 ref mut energy_regen,
                 ref mut radius,
@@ -1101,7 +1101,7 @@ impl ProjectileConstructor {
         match self {
             Arrow { .. } => false,
             Knife { .. } => false,
-            Droplet { .. } => true,
+            FireDroplet { .. } => true,
             Fireball { .. } => true,
             Frostball { .. } => true,
             Poisonball { .. } => true,

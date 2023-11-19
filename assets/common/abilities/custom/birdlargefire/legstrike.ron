@@ -22,5 +22,5 @@ ComboMelee2(
         ),
     ],
     energy_cost_per_strike: 0,
-    auto_progress: true,
+    auto_progress: false,
 )
