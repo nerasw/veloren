@@ -78,7 +78,12 @@ impl CharacterBehavior for Data {
                         let mut aura = aura_data.to_aura(
                             data.uid,
                             self.static_data.range,
-                            Some(self.static_data.aura_duration),
+                            // check for indefinite aura
+                            if self.static_data.aura_duration.0 > 0.0 {
+                                Some(self.static_data.aura_duration)
+                            } else {
+                                None
+                            },
                             targets,
                             *data.time,
                         );
