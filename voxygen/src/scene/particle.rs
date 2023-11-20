@@ -433,75 +433,6 @@ impl ParticleMgr {
                     )
                 });
             },
-            Outcome::FromTheAshes { pos, .. } => {
-                self.particles.resize_with(
-                    self.particles.len()
-                        + 2 * usize::from(self.scheduler.heartbeats(Duration::from_millis(1))),
-                    || {
-                        let start_pos = pos + Vec3::unit_z() - 1.0;
-                        let end_pos = pos
-                            + Vec3::new(
-                                4.0 * rng.gen::<f32>() - 1.0,
-                                4.0 * rng.gen::<f32>() - 1.0,
-                                0.0,
-                            )
-                            .normalized()
-                                * 1.5
-                            + Vec3::unit_z()
-                            + 5.0 * rng.gen::<f32>();
-
-                        Particle::new_directed(
-                            Duration::from_secs_f32(0.5),
-                            time,
-                            ParticleMode::FieryBurst,
-                            start_pos,
-                            end_pos,
-                        )
-                    },
-                );
-                self.particles.resize_with(
-                    self.particles.len()
-                        + usize::from(self.scheduler.heartbeats(Duration::from_millis(10))),
-                    || {
-                        Particle::new(
-                            Duration::from_millis(650),
-                            time,
-                            ParticleMode::FieryBurstVortex,
-                            pos.map(|e| e + rng.gen_range(-0.25..0.25)) + Vec3::new(0.0, 0.0, 1.0),
-                        )
-                    },
-                );
-                self.particles.resize_with(
-                    self.particles.len()
-                        + usize::from(self.scheduler.heartbeats(Duration::from_millis(40))),
-                    || {
-                        Particle::new(
-                            Duration::from_millis(1000),
-                            time,
-                            ParticleMode::FieryBurstSparks,
-                            pos.map(|e| e + rng.gen_range(-0.25..0.25)),
-                        )
-                    },
-                );
-                self.particles.resize_with(
-                    self.particles.len()
-                        + usize::from(self.scheduler.heartbeats(Duration::from_millis(14))),
-                    || {
-                        let pos1 = pos.map(|e| e + rng.gen_range(-0.25..0.25));
-                        Particle::new_directed(
-                            Duration::from_millis(1000),
-                            time,
-                            ParticleMode::FieryBurstAsh,
-                            pos1,
-                            Vec3::new(
-                                            4.5,    // radius of rand spawn
-                                            20.4,   // integer part - radius of the curve part, fractional part - relative time of setting particle on fire
-                                            8.58)   // height of the flight
-                                            + pos1,
-                        )
-                    },
-                );
-            },
             Outcome::ProjectileShot { .. }
             | Outcome::Beam { .. }
             | Outcome::ExpChange { .. }
@@ -518,6 +449,7 @@ impl ParticleMgr {
             | Outcome::Steam { .. }
             | Outcome::FireShockwave { .. }
             | Outcome::PortalActivated { .. }
+            | Outcome::FromTheAshes { .. }
             | Outcome::LaserBeam { .. } => {},
         }
     }
@@ -1220,6 +1152,94 @@ impl ParticleMgr {
                     );
                 },
                 CharacterState::SelfBuff(c) => {
+                    if let Some(specifier) = c.static_data.specifier {
+                        match specifier {
+                            states::self_buff::FrontendSpecifier::FromTheAshes => {
+                                if matches!(c.stage_section, StageSection::Action) {
+                                    let pos = interpolated.pos;
+                                    self.particles.resize_with(
+                                        self.particles.len()
+                                            + 2 * usize::from(
+                                                self.scheduler.heartbeats(Duration::from_millis(1)),
+                                            ),
+                                        || {
+                                            let start_pos = pos + Vec3::unit_z() - 1.0;
+                                            let end_pos = pos
+                                                + Vec3::new(
+                                                    4.0 * rng.gen::<f32>() - 1.0,
+                                                    4.0 * rng.gen::<f32>() - 1.0,
+                                                    0.0,
+                                                )
+                                                .normalized()
+                                                    * 1.5
+                                                + Vec3::unit_z()
+                                                + 5.0 * rng.gen::<f32>();
+
+                                            Particle::new_directed(
+                                                Duration::from_secs_f32(0.5),
+                                                time,
+                                                ParticleMode::FieryBurst,
+                                                start_pos,
+                                                end_pos,
+                                            )
+                                        },
+                                    );
+                                    self.particles.resize_with(
+                                        self.particles.len()
+                                            + usize::from(
+                                                self.scheduler
+                                                    .heartbeats(Duration::from_millis(10)),
+                                            ),
+                                        || {
+                                            Particle::new(
+                                                Duration::from_millis(650),
+                                                time,
+                                                ParticleMode::FieryBurstVortex,
+                                                pos.map(|e| e + rng.gen_range(-0.25..0.25))
+                                                    + Vec3::new(0.0, 0.0, 1.0),
+                                            )
+                                        },
+                                    );
+                                    self.particles.resize_with(
+                                        self.particles.len()
+                                            + usize::from(
+                                                self.scheduler
+                                                    .heartbeats(Duration::from_millis(40)),
+                                            ),
+                                        || {
+                                            Particle::new(
+                                                Duration::from_millis(1000),
+                                                time,
+                                                ParticleMode::FieryBurstSparks,
+                                                pos.map(|e| e + rng.gen_range(-0.25..0.25)),
+                                            )
+                                        },
+                                    );
+                                    self.particles.resize_with(
+                                        self.particles.len()
+                                            + usize::from(
+                                                self.scheduler
+                                                    .heartbeats(Duration::from_millis(14)),
+                                            ),
+                                        || {
+                                            let pos1 = pos.map(|e| e + rng.gen_range(-0.25..0.25));
+                                            Particle::new_directed(
+                                                Duration::from_millis(1000),
+                                                time,
+                                                ParticleMode::FieryBurstAsh,
+                                                pos1,
+                                                Vec3::new(
+                                                    4.5,    // radius of rand spawn
+                                                    20.4,   // integer part - radius of the curve part, fractional part - relative time of setting particle on fire
+                                                    8.58)   // height of the flight
+                                                    + pos1,
+                                            )
+                                        },
+                                    );
+                                }
+                            },
+                        }
+                    }
                     use buff::BuffKind;
                     if let BuffKind::Frenzied = c.static_data.buff_kind {
                         if matches!(c.stage_section, StageSection::Action) {
