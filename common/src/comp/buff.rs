@@ -417,7 +417,7 @@ impl BuffKind {
             ],
             BuffKind::Heatstroke => vec![
                 BuffEffect::MovementSpeed(1.0 - nn_scaling(data.strength) * 0.5),
-                BuffEffect::EnergyReward(1.0 - nn_scaling(data.strength) * 3.0),
+                BuffEffect::EnergyReward((1.0 - nn_scaling(data.strength) * 3.0).max(-1.0)),
             ],
         }
     }

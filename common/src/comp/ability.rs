@@ -720,7 +720,7 @@ pub enum CharacterAbility {
         projectile_light: Option<LightEmitter>,
         projectile_speed: f32,
         damage_effect: Option<CombatEffect>,
-        aoe: Option<repeater_ranged::AOE>,
+        properties_of_aoe: Option<repeater_ranged::ProjectileOffset>,
         #[serde(default)]
         meta: AbilityMeta,
     },
@@ -906,7 +906,7 @@ pub enum CharacterAbility {
         recover_duration: f32,
         targets: combat::GroupTarget,
         auras: Vec<aura::AuraBuffConstructor>,
-        aura_duration: Secs,
+        aura_duration: Option<Secs>,
         range: f32,
         energy_cost: f32,
         scales_with_combo: bool,
@@ -1227,7 +1227,7 @@ impl CharacterAbility {
                 projectile_light: _,
                 ref mut projectile_speed,
                 damage_effect: _,
-                aoe: _,
+                properties_of_aoe: _,
                 meta: _,
             } => {
                 *buildup_duration /= stats.speed;
@@ -2596,7 +2596,7 @@ impl From<(&CharacterAbility, AbilityInfo, &JoinData<'_>)> for CharacterState {
                 projectile_light,
                 projectile_speed,
                 damage_effect,
-                aoe,
+                properties_of_aoe,
                 meta: _,
             } => CharacterState::RepeaterRanged(repeater_ranged::Data {
                 static_data: repeater_ranged::StaticData {
@@ -2613,7 +2613,7 @@ impl From<(&CharacterAbility, AbilityInfo, &JoinData<'_>)> for CharacterState {
                     projectile_speed: *projectile_speed,
                     ability_info,
                     damage_effect: *damage_effect,
-                    aoe: *aoe,
+                    properties_of_aoe: *properties_of_aoe,
                 },
                 timer: Duration::default(),
                 stage_section: StageSection::Buildup,

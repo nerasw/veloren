@@ -1035,8 +1035,11 @@ impl ParticleMgr {
                     }
                 },
                 CharacterState::RepeaterRanged(repeater) => {
-                    if let Some(Some(specifier)) =
-                        repeater.static_data.aoe.as_ref().map(|aoe| aoe.specifier)
+                    if let Some(Some(specifier)) = repeater
+                        .static_data
+                        .properties_of_aoe
+                        .as_ref()
+                        .map(|aoe| aoe.specifier)
                     {
                         match specifier {
                             states::repeater_ranged::FrontendSpecifier::FireRain => {
@@ -1051,7 +1054,7 @@ impl ParticleMgr {
                                             let theta = rng.gen::<f32>() * TAU;
                                             let radius = repeater
                                                 .static_data
-                                                .aoe
+                                                .properties_of_aoe
                                                 .map(|aoe| aoe.radius)
                                                 .unwrap_or_default()
                                                 * rng.gen::<f32>().sqrt();
@@ -1062,7 +1065,7 @@ impl ParticleMgr {
                                         let pos1 = rand_pos.with_z(
                                             repeater
                                                 .static_data
-                                                .aoe
+                                                .properties_of_aoe
                                                 .map(|aoe| aoe.height)
                                                 .unwrap_or_default()
                                                 + interpolated.pos.z
@@ -1087,7 +1090,7 @@ impl ParticleMgr {
                                             let theta = rng.gen::<f32>() * TAU;
                                             let radius = repeater
                                                 .static_data
-                                                .aoe
+                                                .properties_of_aoe
                                                 .map(|aoe| aoe.radius)
                                                 .unwrap_or_default()
                                                 * rng.gen::<f32>().sqrt();
@@ -1098,7 +1101,7 @@ impl ParticleMgr {
                                         let pos1 = rand_pos.with_z(
                                             repeater
                                                 .static_data
-                                                .aoe
+                                                .properties_of_aoe
                                                 .map(|aoe| aoe.height)
                                                 .unwrap_or_default()
                                                 + interpolated.pos.z

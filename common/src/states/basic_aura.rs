@@ -29,7 +29,7 @@ pub struct StaticData {
     /// Has information used to construct the auras
     pub auras: Vec<AuraBuffConstructor>,
     /// How long aura lasts
-    pub aura_duration: Secs,
+    pub aura_duration: Option<Secs>,
     /// Radius of aura
     pub range: f32,
     /// What key is used to press ability
@@ -79,11 +79,7 @@ impl CharacterBehavior for Data {
                             data.uid,
                             self.static_data.range,
                             // check for indefinite aura
-                            if self.static_data.aura_duration.0 > 0.0 {
-                                Some(self.static_data.aura_duration)
-                            } else {
-                                None
-                            },
+                            self.static_data.aura_duration,
                             targets,
                             *data.time,
                         );

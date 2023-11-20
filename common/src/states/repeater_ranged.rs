@@ -41,11 +41,11 @@ pub struct StaticData {
     pub damage_effect: Option<CombatEffect>,
     /// Whether ablity should be casted from above as aoe or shoot projectiles
     /// as normal
-    pub aoe: Option<AOE>,
+    pub properties_of_aoe: Option<ProjectileOffset>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
-pub struct AOE {
+pub struct ProjectileOffset {
     /// Radius of AOE
     pub radius: f32,
     /// Height of shooting point for AOE's projectiles
@@ -109,7 +109,7 @@ impl CharacterBehavior for Data {
                     let precision_mult = combat::compute_precision_mult(data.inventory, data.msm);
                     let tool_stats = get_tool_stats(data, self.static_data.ability_info);
                     // Gets offsets
-                    let pos: Pos = self.static_data.aoe.as_ref().map_or_else(
+                    let pos: Pos = self.static_data.properties_of_aoe.as_ref().map_or_else(
                         || {
                             // Default position
                             let body_offsets = data.body.projectile_offsets(
@@ -121,8 +121,9 @@ impl CharacterBehavior for Data {
                         |aoe_data| {
                             // Position calculated from aoe_data
                             let rand_pos = {
-                                let theta = thread_rng().gen::<f32>() * TAU;
-                                let radius = aoe_data.radius * thread_rng().gen::<f32>().sqrt();
+                                let mut rng = thread_rng();
+                                let theta = rng.gen::<f32>() * TAU;
+                                let radius = aoe_data.radius * rng.gen::<f32>().sqrt();
                                 let x = radius * theta.sin();
                                 let y = radius * theta.cos();
                                 vek::Vec2::new(x, y)
@@ -131,7 +132,7 @@ impl CharacterBehavior for Data {
                         },
                     );
 
-                    let direction: Dir = if self.static_data.aoe.is_some() {
+                    let direction: Dir = if self.static_data.properties_of_aoe.is_some() {
                         Dir::down()
                     } else {
                         data.inputs.look_dir

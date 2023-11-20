@@ -24,13 +24,7 @@ RepeaterRanged(
         animated: true,
     )),
     projectile_speed: 0.0,
-    damage_effect: Some(Buff((
-        kind: Poisoned,
-        dur_secs: 10.0,
-        strength: DamageFraction(0.3),
-        chance: 1.0,
-    ))),
-        aoe: Some(AOE(
+    properties_of_aoe: Some(ProjectileOffset(
         radius: 30,
         height: 20,
         specifier: Some(FireRain),
