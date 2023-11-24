@@ -16,8 +16,7 @@ use crate::{
 use common::{
     astar::{Astar, PathResult},
     comp::{
-        self,
-        bird_large,
+        self, bird_large,
         compass::{Direction, Distance},
         dialogue::Subject,
         Content,
