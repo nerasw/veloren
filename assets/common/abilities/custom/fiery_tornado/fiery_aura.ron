@@ -11,7 +11,7 @@ BasicAura(
             category: Magical,
         ),
     ],
-    aura_duration: Some(0.0),
+    aura_duration: None,
     range: 20.0,
     energy_cost: 0.0,
     scales_with_combo: false,

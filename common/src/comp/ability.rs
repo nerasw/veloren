@@ -721,6 +721,7 @@ pub enum CharacterAbility {
         projectile_speed: f32,
         damage_effect: Option<CombatEffect>,
         properties_of_aoe: Option<repeater_ranged::ProjectileOffset>,
+        specifier: Option<repeater_ranged::FrontendSpecifier>,
         #[serde(default)]
         meta: AbilityMeta,
     },
@@ -1228,6 +1229,7 @@ impl CharacterAbility {
                 ref mut projectile_speed,
                 damage_effect: _,
                 properties_of_aoe: _,
+                specifier: _,
                 meta: _,
             } => {
                 *buildup_duration /= stats.speed;
@@ -2597,6 +2599,7 @@ impl From<(&CharacterAbility, AbilityInfo, &JoinData<'_>)> for CharacterState {
                 projectile_speed,
                 damage_effect,
                 properties_of_aoe,
+                specifier,
                 meta: _,
             } => CharacterState::RepeaterRanged(repeater_ranged::Data {
                 static_data: repeater_ranged::StaticData {
@@ -2614,6 +2617,7 @@ impl From<(&CharacterAbility, AbilityInfo, &JoinData<'_>)> for CharacterState {
                     ability_info,
                     damage_effect: *damage_effect,
                     properties_of_aoe: *properties_of_aoe,
+                    specifier: *specifier,
                 },
                 timer: Duration::default(),
                 stage_section: StageSection::Buildup,

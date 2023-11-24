@@ -1035,12 +1035,7 @@ impl ParticleMgr {
                     }
                 },
                 CharacterState::RepeaterRanged(repeater) => {
-                    if let Some(Some(specifier)) = repeater
-                        .static_data
-                        .properties_of_aoe
-                        .as_ref()
-                        .map(|aoe| aoe.specifier)
-                    {
+                    if let Some(specifier) = repeater.static_data.specifier {
                         match specifier {
                             states::repeater_ranged::FrontendSpecifier::FireRain => {
                                 // base, dark clouds

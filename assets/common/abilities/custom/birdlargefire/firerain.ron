@@ -27,6 +27,6 @@ RepeaterRanged(
     properties_of_aoe: Some(ProjectileOffset(
         radius: 30,
         height: 20,
-        specifier: Some(FireRain),
     )),
+    specifier: Some(FireRain),
 )

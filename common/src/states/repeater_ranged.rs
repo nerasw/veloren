@@ -42,6 +42,8 @@ pub struct StaticData {
     /// Whether ablity should be casted from above as aoe or shoot projectiles
     /// as normal
     pub properties_of_aoe: Option<ProjectileOffset>,
+    /// Used to specify the attack to the frontend
+    pub specifier: Option<FrontendSpecifier>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
@@ -50,8 +52,6 @@ pub struct ProjectileOffset {
     pub radius: f32,
     /// Height of shooting point for AOE's projectiles
     pub height: f32,
-    /// Used to specify the attack to the frontend
-    pub specifier: Option<FrontendSpecifier>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
