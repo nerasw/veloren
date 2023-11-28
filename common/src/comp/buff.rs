@@ -165,7 +165,8 @@ pub enum BuffKind {
     /// Slows movement speed and reduces energy reward.
     /// Both scales non-linearly to strength, 0.5 lead to movespeed reduction
     /// by 25% and energy reward reduced by 150%, 1.0 lead to MS reduction by
-    /// 33.3% and energy reward reduced by 200%.
+    /// 33.3% and energy reward reduced by 200%. Energy reward can't be
+    /// reduced by more than 200%, to a minimum value of -100%.
     Heatstroke,
 }
 
