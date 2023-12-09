@@ -1,12 +1,13 @@
 use hashbrown::HashSet;
 use rand::{seq::IteratorRandom, Rng};
+use rtsim::data::Npc;
 use specs::{join::Join, world::WorldExt, Builder, Entity as EcsEntity, WriteStorage};
 use tracing::{debug, error, warn};
 use vek::{Rgb, Vec3};
 
 use common::{
     comp::{
-        self,
+        self, biped_large,
         group::members,
         item::{self, flatten_counted_items, tool::AbilityMap, MaterialStatManifest},
         loot_owner::LootOwnerKind,
@@ -34,7 +35,8 @@ use common::{
     comp::{
         pet::is_tameable, Alignment, Body, CollectFailedReason, Group, InventoryUpdateEvent, Player,
     },
-    event::{EventBus, ServerEvent},
+    event::{EventBus, LocalEvent, ServerEvent},
+    outcome::Outcome,
 };
 use common_net::msg::ServerGeneral;
 
@@ -323,6 +325,48 @@ pub fn handle_inventory(server: &mut Server, entity: EcsEntity, manip: comp::Inv
 
                     // We made sure earlier the block was not already modified this tick
                     block_change.set(sprite_pos, block.into_vacant());
+
+                    // World Boss Compass - interactable sprites show boss direction and distance
+                    // via outcome
+                    if let Some(compass_keyhole) = block.get_sprite() {
+                        let sprite_position = Vec3::new(
+                            sprite_pos.x as f32,
+                            sprite_pos.y as f32,
+                            sprite_pos.z as f32,
+                        );
+                        use crate::rtsim::RtSim;
+                        let boss_filter = |npc: &&Npc| match block.get_sprite() {
+                            Some(SpriteKind::GlassKeyhole) => {
+                                matches!(&npc.body, comp::Body::BipedLarge(b) if matches!(b.species, biped_large::Species::Gigasfrost))
+                            },
+                            _ => {
+                                matches!(&npc.body, comp::Body::BipedLarge(b) if matches!(b.species, biped_large::Species::Cyclops))
+                            },
+                        };
+                        let boss_position = if let Some(boss) = state
+                            .ecs()
+                            .read_resource::<RtSim>()
+                            .state()
+                            .data()
+                            .npcs
+                            .values()
+                            .filter(boss_filter)
+                            .min_by_key(|other| other.wpos.distance(sprite_position) as i32)
+                        {
+                            boss.wpos
+                        } else {
+                            sprite_position
+                        };
+
+                        let local_eventbus = state.ecs().read_resource::<EventBus<LocalEvent>>();
+                        local_eventbus.emit_now(LocalEvent::CreateOutcome(
+                            Outcome::WorldBossCompass {
+                                pos: sprite_position,
+                                boss_pos: boss_position,
+                                sprite: compass_keyhole,
+                            },
+                        ));
+                    }
 
                     // If the block was a keyhole, remove nearby door blocks
                     // TODO: Abstract this code into a generalised way to do block updates?

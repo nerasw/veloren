@@ -149,6 +149,11 @@ pub enum Outcome {
     FromTheAshes {
         pos: Vec3<f32>,
     },
+    WorldBossCompass {
+        pos: Vec3<f32>,
+        boss_pos: Vec3<f32>,
+        sprite: SpriteKind,
+    },
 }
 
 impl Outcome {
@@ -181,6 +186,7 @@ impl Outcome {
             | Outcome::PortalActivated { pos }
             | Outcome::TeleportedByPortal { pos}
             | Outcome::FromTheAshes { pos }
+            | Outcome::WorldBossCompass { pos, .. }
             | Outcome::Glider { pos, .. } => Some(*pos),
             Outcome::BreakBlock { pos, .. }
             | Outcome::SpriteUnlocked { pos }

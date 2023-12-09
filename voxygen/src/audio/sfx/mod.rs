@@ -462,6 +462,10 @@ impl SfxMgr {
                 let sfx_trigger_item = triggers.get_key_value(&SfxEvent::GroundSlam);
                 audio.emit_sfx(sfx_trigger_item, *pos, Some(2.0), underwater);
             },
+            Outcome::WorldBossCompass { pos, .. } => {
+                let sfx_trigger_item = triggers.get_key_value(&SfxEvent::GroundSlam);
+                audio.emit_sfx(sfx_trigger_item, *pos, Some(2.0), underwater);
+            },
             Outcome::LaserBeam { pos, .. } => {
                 let sfx_trigger_item = triggers.get_key_value(&SfxEvent::LaserBeam);
                 audio.emit_sfx(sfx_trigger_item, *pos, Some(2.0), underwater);

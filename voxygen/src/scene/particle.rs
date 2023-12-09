@@ -433,6 +433,48 @@ impl ParticleMgr {
                     )
                 });
             },
+            Outcome::WorldBossCompass {
+                pos,
+                boss_pos,
+                sprite,
+            } => {
+                let boss_dir_raw = pos - boss_pos;
+                let boss_dist = (boss_dir_raw.x.abs() + boss_dir_raw.y.abs()) / 100.0;
+                for n in 0..boss_dist as i32 {
+                    self.particles.resize_with(
+                        self.particles.len()
+                            + 2 * usize::from(self.scheduler.heartbeats(Duration::from_millis(1))),
+                        || {
+                            let boss_dir = Vec3::new(
+                                boss_dir_raw.x / boss_dir_raw.x.abs(),
+                                boss_dir_raw.y / boss_dir_raw.y.abs(),
+                                1.0,
+                            );
+                            let end_pos = pos
+                                + Vec3::new(
+                                    2.0 * rng.gen::<f32>() - 1.0,
+                                    2.0 * rng.gen::<f32>() - 1.0,
+                                    0.0,
+                                )
+                                .normalized()
+                                    * ((10.0 + n as f32) / 2.0)
+                                + (boss_dir * (10.0 + n as f32));
+
+                            let particle_mode = match sprite {
+                                SpriteKind::GlassKeyhole => ParticleMode::GigaSnow,
+                                _ => ParticleMode::FlameThrower,
+                            };
+                            Particle::new_directed(
+                                Duration::from_secs_f32(1.5),
+                                time,
+                                particle_mode,
+                                *pos,
+                                end_pos,
+                            )
+                        },
+                    );
+                }
+            },
             Outcome::ProjectileShot { .. }
             | Outcome::Beam { .. }
             | Outcome::ExpChange { .. }
