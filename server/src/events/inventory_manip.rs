@@ -359,37 +359,25 @@ pub fn handle_inventory(server: &mut Server, entity: EcsEntity, manip: comp::Inv
                         };
 
                         let boss_dir_raw = boss_position - sprite_position;
-
-                        /*
-                        let boss_dir_cardinal = if boss_dir_raw.x.abs() > boss_dir_raw.y.abs() {
-                            if boss_dir_raw.x > 0.0 {
-                                Vec3::new(1, 0, 0)
-                            } else {
-                                Vec3::new(-1, 0, 0)
-                            }
-                        } else if boss_dir_raw.y > 0.0 {
-                            Vec3::new(0, 1, 0)
-                        } else {
-                            Vec3::new(0, -1, 0)
-                        };
-                        let boss_dir =
-                            Vec3::new(boss_dir_cardinal.x as f32, boss_dir_cardinal.y as f32, 1.0);
-                         */
-
-                        // precise dir
                         let boss_dir = Vec3::new(
                             boss_dir_raw.x / boss_dir_raw.x.abs(),
                             boss_dir_raw.y / boss_dir_raw.y.abs(),
                             1.0,
                         );
-
+                        let boss_dir_radian_rounded =
+                            (boss_dir.y.atan2(boss_dir.x) * 10.0).round() / 10.0;
+                        let boss_dir_rounded = Vec3::new(
+                            boss_dir_radian_rounded.cos(),
+                            boss_dir_radian_rounded.sin(),
+                            1.0,
+                        );
                         let boss_dist = boss_position.distance(sprite_position);
 
                         let local_eventbus = state.ecs().read_resource::<EventBus<LocalEvent>>();
                         local_eventbus.emit_now(LocalEvent::CreateOutcome(
                             Outcome::WorldBossCompass {
                                 pos: sprite_position,
-                                boss_dir,
+                                boss_dir: boss_dir_rounded,
                                 boss_dist,
                                 sprite: compass_keyhole,
                             },
