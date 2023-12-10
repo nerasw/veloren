@@ -456,7 +456,7 @@ impl ParticleMgr {
                                 + (boss_dir * (10.0 + n as f32));
 
                             let particle_mode = match sprite {
-                                SpriteKind::GlassKeyhole => ParticleMode::GigaSnow,
+                                SpriteKind::GigasfrostAltar => ParticleMode::GigaSnow,
                                 _ => ParticleMode::FlameThrower,
                             };
                             Particle::new_directed(

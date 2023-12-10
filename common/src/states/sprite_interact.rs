@@ -191,6 +191,7 @@ impl From<SpriteKind> for Option<SpriteInteractKind> {
             SpriteKind::Keyhole
             | SpriteKind::BoneKeyhole
             | SpriteKind::GlassKeyhole
+            | SpriteKind::GigasfrostAltar
             | SpriteKind::KeyholeBars => Some(SpriteInteractKind::Unlock),
             // Collectible checked in addition to container for case that sprite requires a tool to
             // collect and cannot be collected by hand, yet still meets the container check

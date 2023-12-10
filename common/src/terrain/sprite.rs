@@ -268,6 +268,7 @@ make_case_elim!(
         Quench0 = 0xEF,
         IronSpike = 0xF0,
         HotSurface = 0xF1,
+        GigasfrostAltar = 0xF2,
     }
 );
 
@@ -419,6 +420,7 @@ impl SpriteKind {
             SpriteKind::GearWheel0 => 3.0 / 11.0,
             SpriteKind::Quench0 => 8.0 / 11.0,
             SpriteKind::HotSurface => 0.01,
+            SpriteKind::GigasfrostAltar => 2.55,
             _ => return None,
         })
     }
@@ -543,6 +545,7 @@ impl SpriteKind {
             SpriteKind::Keyhole
             | SpriteKind::BoneKeyhole
             | SpriteKind::GlassKeyhole
+            | SpriteKind::GigasfrostAltar
             | SpriteKind::KeyholeBars => {
                 return Some(None);
             },
@@ -648,6 +651,9 @@ impl SpriteKind {
                     ItemDefinitionId::Simple("common.items.keys.bone_key").to_owned(),
                 ),
                 SpriteKind::GlassKeyhole => UnlockKind::Consumes(
+                    ItemDefinitionId::Simple("common.items.keys.glass_key").to_owned(),
+                ),
+                SpriteKind::GigasfrostAltar => UnlockKind::Consumes(
                     ItemDefinitionId::Simple("common.items.keys.glass_key").to_owned(),
                 ),
                 _ => UnlockKind::Free,

@@ -343,6 +343,7 @@ impl Block {
                 SpriteKind::SeashellLantern | SpriteKind::GlowIceCrystal => Some(16),
                 SpriteKind::SeaDecorEmblem => Some(12),
                 SpriteKind::SeaDecorBlock => Some(10),
+                SpriteKind::GigasfrostAltar => Some(16),
                 SpriteKind::Mine => Some(2),
                 _ => None,
             },
@@ -406,7 +407,8 @@ impl Block {
                 | SpriteKind::BoneKeyDoor
                 | SpriteKind::OneWayWall
                 | SpriteKind::KeyholeBars
-                | SpriteKind::DoorBars => None,
+                | SpriteKind::DoorBars
+                | SpriteKind::GigasfrostAltar => None,
                 SpriteKind::Anvil
                 | SpriteKind::Cauldron
                 | SpriteKind::CookingPot

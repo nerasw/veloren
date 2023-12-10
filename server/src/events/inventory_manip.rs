@@ -7,7 +7,7 @@ use vek::{Rgb, Vec3};
 
 use common::{
     comp::{
-        self, biped_large,
+        self, biped_large, bird_large,
         group::members,
         item::{self, flatten_counted_items, tool::AbilityMap, MaterialStatManifest},
         loot_owner::LootOwnerKind,
@@ -324,7 +324,10 @@ pub fn handle_inventory(server: &mut Server, entity: EcsEntity, manip: comp::Inv
                     }
 
                     // We made sure earlier the block was not already modified this tick
-                    block_change.set(sprite_pos, block.into_vacant());
+                    // (Don't remove World Boss Compass sprites)
+                    if !matches!(block.get_sprite(), Some(SpriteKind::GigasfrostAltar)) {
+                        block_change.set(sprite_pos, block.into_vacant())
+                    };
 
                     // World Boss Compass - interactable sprites show boss direction and distance
                     // via outcome
@@ -336,11 +339,11 @@ pub fn handle_inventory(server: &mut Server, entity: EcsEntity, manip: comp::Inv
                         );
                         use crate::rtsim::RtSim;
                         let boss_filter = |npc: &&Npc| match block.get_sprite() {
-                            Some(SpriteKind::GlassKeyhole) => {
+                            Some(SpriteKind::GigasfrostAltar) => {
                                 matches!(&npc.body, comp::Body::BipedLarge(b) if matches!(b.species, biped_large::Species::Gigasfrost))
                             },
                             _ => {
-                                matches!(&npc.body, comp::Body::BipedLarge(b) if matches!(b.species, biped_large::Species::Cyclops))
+                                matches!(&npc.body, comp::Body::BirdLarge(b) if matches!(b.species, bird_large::Species::Phoenix))
                             },
                         };
                         let boss_position = if let Some(boss) = state

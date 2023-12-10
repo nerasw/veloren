@@ -4609,4 +4609,14 @@ HotSurface: Some((
     variations: [],
     wind_sway: 0.0,
 )),
+GigasfrostAltar: Some((
+     variations: [
+         (
+            model: "voxygen.voxel.sprite.misc.sea_decor_pillar-0",
+            offset: (-5.5, -5.5, 0.0),
+            lod_axes: (1.0, 1.0, 1.0),
+         ),
+     ],
+     wind_sway: 0.0,
+)),
 }
