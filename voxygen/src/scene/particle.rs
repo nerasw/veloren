@@ -435,21 +435,16 @@ impl ParticleMgr {
             },
             Outcome::WorldBossCompass {
                 pos,
-                boss_pos,
+                boss_dir,
+                boss_dist,
                 sprite,
             } => {
-                let boss_dir_raw = pos - boss_pos;
-                let boss_dist = (boss_dir_raw.x.abs() + boss_dir_raw.y.abs()) / 100.0;
-                for n in 0..boss_dist as i32 {
+                let dist = boss_dist / 100.0;
+                for n in 0..dist as i32 {
                     self.particles.resize_with(
                         self.particles.len()
                             + 2 * usize::from(self.scheduler.heartbeats(Duration::from_millis(1))),
                         || {
-                            let boss_dir = Vec3::new(
-                                boss_dir_raw.x / boss_dir_raw.x.abs(),
-                                boss_dir_raw.y / boss_dir_raw.y.abs(),
-                                1.0,
-                            );
                             let end_pos = pos
                                 + Vec3::new(
                                     2.0 * rng.gen::<f32>() - 1.0,

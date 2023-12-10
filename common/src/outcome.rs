@@ -151,7 +151,8 @@ pub enum Outcome {
     },
     WorldBossCompass {
         pos: Vec3<f32>,
-        boss_pos: Vec3<f32>,
+        boss_dir: Vec3<f32>,
+        boss_dist: f32,
         sprite: SpriteKind,
     },
 }
