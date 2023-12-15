@@ -446,24 +446,30 @@ impl ParticleMgr {
                             + 2 * usize::from(self.scheduler.heartbeats(Duration::from_millis(1))),
                         || {
                             let end_pos = pos
-                                + Vec3::new(
-                                    2.0 * rng.gen::<f32>() - 1.0,
-                                    2.0 * rng.gen::<f32>() - 1.0,
-                                    0.0,
-                                )
-                                .normalized()
-                                    * ((10.0 + n as f32) / 2.0)
-                                + (boss_dir * (10.0 + n as f32));
+                                + (boss_dir
+                                .normalized().xy()
+                                    * ((10.0 + n as f32) / 2.0))
+                                    .with_z(1.0);
+                            
+                            let rand_pos = {
+                                let mut rng = thread_rng();
+                                let theta = rng.gen::<f32>() * TAU;
+                                let thetaz = rng.gen::<f32>() * TAU;
+                                let radius = 10.0 * rng.gen::<f32>().sqrt();
+                                let x = 10.0 * theta.sin() * thetaz.cos();
+                                let y = 10.0 * theta.sin() * thetaz.sin();
+                                vek::Vec2::new(x, y).with_z(5.0 + 10.0 * theta.cos())
+                            };
 
                             let particle_mode = match sprite {
-                                SpriteKind::GigasfrostAltar => ParticleMode::GigaSnow,
+                                SpriteKind::GigasfrostAltar => ParticleMode::GigaCompass,
                                 _ => ParticleMode::FlameThrower,
                             };
                             Particle::new_directed(
                                 Duration::from_secs_f32(1.5),
                                 time,
                                 particle_mode,
-                                *pos,
+                                *pos + rand_pos,
                                 end_pos,
                             )
                         },

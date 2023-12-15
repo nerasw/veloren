@@ -12,6 +12,8 @@
 
 #define LIGHTING_DISTRIBUTION LIGHTING_DISTRIBUTION_BECKMANN
 
+#define TAU 6.2831855
+
 #include <globals.glsl>
 #include <srgb.glsl>
 #include <random.glsl>
@@ -94,6 +96,7 @@ const int FIERY_DROPLET_TRACE = 54;
 const int ENERGY_PHOENIX = 55;
 const int PHOENIX_BEAM = 56;
 const int PHOENIX_BUILD_UP_AIM = 57;
+const int GIGA_COMPASS = 58;
 
 // meters per second squared (acceleration)
 const float earth_gravity = 9.807;
@@ -969,6 +972,15 @@ void main() {
                 vec3((1.9 * (1 - slow_start(0.2)))),
                 vec4(aim_r, aim_g, aim_b, 1.0),
                 spin_in_axis(vec3(rand6, rand7, rand8), perc_t * 10.0 + 3.0 * rand9)
+            );
+            break;
+        case GIGA_COMPASS:
+            f_reflect = 0.0;
+            attr = Attr(
+                start_pos + vec3(0.0, 0.0, sin(rand0 * TAU)),
+                vec3((3.5 * (1 - slow_start(0.2)))),
+                vec4(vec3(2, 2, 2), 1),
+                spin_in_axis(vec3(rand6, rand7, rand8), percent() * 10 + 3 * rand9)
             );
             break;
         default:

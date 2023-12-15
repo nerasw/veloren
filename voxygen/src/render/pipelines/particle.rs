@@ -109,6 +109,7 @@ pub enum ParticleMode {
     EnergyPhoenix = 55,
     PhoenixBeam = 56,
     PhoenixBuildUpAim = 57,
+    GigaCompass = 58,
 }
 
 impl ParticleMode {
