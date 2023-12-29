@@ -977,9 +977,9 @@ void main() {
         case GIGA_COMPASS:
             f_reflect = 0.0;
             attr = Attr(
-                start_pos + vec3(0.0, 0.0, sin(rand0 * TAU)),
+                start_pos,// + vec3(0.0, 0.0, sin(rand0 * TAU)),
                 vec3((3.5 * (1 - slow_start(0.2)))),
-                vec4(vec3(2, 2, 2), 1),
+                vec4(2.0 * inst_dir.x, 2.0 * inst_dir.y, 2.0 * inst_dir.z, 1.0),
                 spin_in_axis(vec3(rand6, rand7, rand8), percent() * 10 + 3 * rand9)
             );
             break;

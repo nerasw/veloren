@@ -445,7 +445,40 @@ impl ParticleMgr {
                         self.particles.len()
                             + 2 * usize::from(self.scheduler.heartbeats(Duration::from_millis(1))),
                         || {
-                            let end_pos = pos
+                            let _end_pos = pos
+                                + (boss_dir
+                                .normalized().xy()
+                                    * ((10.0 + n as f32) / 2.0))
+                                    .with_z(1.0);
+                            
+                            let rand_pos = {
+                                let mut rng = thread_rng();
+                                let theta = rng.gen::<f32>() * PI;
+                                let thetaz = rng.gen::<f32>() * TAU;
+                                //let radius = 10.0 * rng.gen::<f32>().sqrt();
+                                let x = 10.0 * (theta).sin() * thetaz.cos();
+                                let y = 10.0 * theta.sin() * thetaz.sin();
+                                vek::Vec2::new(x, y).with_z(5.0 + 10.0 * theta.cos().abs())
+                            };
+
+                            let particle_mode = match sprite {
+                                SpriteKind::GigasfrostAltar => ParticleMode::GigaCompass,
+                                _ => ParticleMode::FlameThrower,
+                            };
+                            Particle::new_directed(
+                                Duration::from_secs_f32(5.0),
+                                time,
+                                particle_mode,
+                                *pos + rand_pos,
+                                pos + rand_pos + Vec3::new(1.0, 1.0, 1.0),
+                            )
+                        },
+                    );
+                    self.particles.resize_with(
+                        self.particles.len()
+                            + 2 * usize::from(self.scheduler.heartbeats(Duration::from_millis(1))),
+                        || {
+                            let _end_pos = pos
                                 + (boss_dir
                                 .normalized().xy()
                                     * ((10.0 + n as f32) / 2.0))
@@ -455,10 +488,10 @@ impl ParticleMgr {
                                 let mut rng = thread_rng();
                                 let theta = rng.gen::<f32>() * TAU;
                                 let thetaz = rng.gen::<f32>() * TAU;
-                                let radius = 10.0 * rng.gen::<f32>().sqrt();
-                                let x = 10.0 * theta.sin() * thetaz.cos();
-                                let y = 10.0 * theta.sin() * thetaz.sin();
-                                vek::Vec2::new(x, y).with_z(5.0 + 10.0 * theta.cos())
+                                //let radius = 10.0 * rng.gen::<f32>().sqrt();
+                                let x = 10.0 * theta.sin();
+                                let y = 10.0 * theta.cos();
+                                vek::Vec2::new(x, y).with_z(5.0)
                             };
 
                             let particle_mode = match sprite {
@@ -466,11 +499,17 @@ impl ParticleMgr {
                                 _ => ParticleMode::FlameThrower,
                             };
                             Particle::new_directed(
-                                Duration::from_secs_f32(1.5),
+                                Duration::from_secs_f32(5.0),
                                 time,
                                 particle_mode,
-                                *pos + rand_pos,
-                                end_pos,
+                                *pos + Vec3::new(
+                                    4.0 * rng.gen_range(-1.0..=1.0),
+                                    4.0 * rng.gen_range(-1.0..=1.0),
+                                    0.0,
+                                )
+                                .normalized()
+                                    * rng.gen_range(0.0..4.0),
+                                pos + rand_pos + Vec3::new(1.0, 0.0, 1.0),
                             )
                         },
                     );
