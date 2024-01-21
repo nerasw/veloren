@@ -1890,6 +1890,58 @@ impl ParticleMgr {
                                 )
                             });
                     },
+                    aura::AuraKind::Buff {
+                        kind: buff::BuffKind::Cursed,
+                        ..
+                    } => {
+                        let heartbeats = self.scheduler.heartbeats(Duration::from_millis(5));
+                        self.particles.resize_with(
+                            self.particles.len()
+                                + aura.radius.powi(2) as usize * usize::from(heartbeats) / 300,
+                            || {
+                                let rand_dist = aura.radius * (1.0 - rng.gen::<f32>().powi(100));
+                                let init_pos = Vec3::new(rand_dist, 0_f32, 0_f32);
+                                let duration = Duration::from_secs_f64(
+                                    aura.end_time
+                                        .map_or(1.0, |end| end.0 - time)
+                                        .clamp(0.0, 1.0),
+                                );
+                                Particle::new_directed(
+                                    duration,
+                                    time,
+                                    ParticleMode::CursedAura,
+                                    pos,
+                                    pos + init_pos,
+                                )
+                            },
+                        );
+                    },
+                    aura::AuraKind::Buff {
+                        kind: buff::BuffKind::Crippled,
+                        ..
+                    } => {
+                        let heartbeats = self.scheduler.heartbeats(Duration::from_millis(5));
+                        self.particles.resize_with(
+                            self.particles.len()
+                                + aura.radius.powi(2) as usize * usize::from(heartbeats) / 300,
+                            || {
+                                let rand_dist = aura.radius * (1.0 - rng.gen::<f32>().powi(100));
+                                let init_pos = Vec3::new(rand_dist, 0_f32, 0_f32);
+                                let duration = Duration::from_secs_f64(
+                                    aura.end_time
+                                        .map_or(1.0, |end| end.0 - time)
+                                        .clamp(0.0, 1.0),
+                                );
+                                Particle::new_directed(
+                                    duration,
+                                    time,
+                                    ParticleMode::CrippledAura,
+                                    pos,
+                                    pos + init_pos,
+                                )
+                            },
+                        );
+                    },
                     _ => {},
                 }
             }

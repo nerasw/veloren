@@ -183,6 +183,7 @@ impl World {
                         | civ::SiteKind::JungleRuin
                         | civ::SiteKind::RockCircle
                         | civ::SiteKind::TrollCave
+//                        | civ::SiteKind::MageTower
                         | civ::SiteKind::Camp))
                     .map(|(_, site)| {
                         world_msg::SiteInfo {
@@ -200,6 +201,7 @@ impl World {
                                 | civ::SiteKind::JungleRuin
                                 | civ::SiteKind::RockCircle
                                 | civ::SiteKind::TrollCave
+                                | civ::SiteKind::MageTower
                                 | civ::SiteKind::Camp => world_msg::SiteKind::Town,
                                 civ::SiteKind::Dungeon => world_msg::SiteKind::Dungeon {
                                     difficulty: match site.site_tmp.map(|id| &index.sites[id].kind) {

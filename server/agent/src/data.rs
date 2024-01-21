@@ -251,6 +251,7 @@ pub enum Tactic {
     Cyclops,
     IceDrake,
     Flamekeeper,
+    Mage,
 
     // Adlets
     AdletHunter,

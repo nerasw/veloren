@@ -1,0 +1,7 @@
+[
+  (1, All([
+        Item("common.items.keys.rusty_tower_key"),
+        MultiDrop(LootTable("common.loot_tables.food.prepared"), 1, 2),
+        ],
+   )),
+]

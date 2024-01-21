@@ -1117,6 +1117,7 @@ impl<'a> AgentData<'a> {
                             "Dagonite" => Tactic::ArthropodAmbush,
                             "Gnarling Dagger" => Tactic::SimpleBackstab,
                             "Gnarling Blowgun" => Tactic::ElevatedRanged,
+                            "Mage Sceptre" => Tactic::Mage,
                             "Deadwood" => Tactic::Deadwood,
                             "Mandragora" => Tactic::Mandragora,
                             "Wood Golem" => Tactic::WoodGolem,
@@ -1356,6 +1357,9 @@ impl<'a> AgentData<'a> {
                 read_data,
                 rng,
             ),
+            Tactic::Mage => {
+                self.handle_mage_attack(agent, controller, &attack_data, tgt_data, read_data, rng)
+            },
             Tactic::StoneGolem => {
                 self.handle_stone_golem_attack(agent, controller, &attack_data, tgt_data, read_data)
             },

@@ -9,10 +9,12 @@
         whether to prevent trees etc. around this spot
         spawn: true, */
 [
+/*
     (
         base_structures: "spots_general.mage_tower",
         freq: 1.0,
         condition: All([Typical, MaxGradient(0.2), Biome([Forest, Taiga, Snowland, Grassland])]),
         spawn: true,
     ),
+*/
 ]

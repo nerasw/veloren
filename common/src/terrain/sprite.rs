@@ -127,6 +127,8 @@ sprites! {
         Crate             = 0x3C,
         Barrel            = 0x3D,
         CrateBlock        = 0x3E,
+        WizardChestHigh   = 0x3F,
+        WizardChestLow    = 0x40,
         // Wall
         HangingBasket     = 0x50,
         HangingSign       = 0x51,
@@ -416,6 +418,8 @@ impl SpriteKind {
             SpriteKind::DungeonChest4 => 1.09,
             SpriteKind::DungeonChest5 => 1.09,
             SpriteKind::CoralChest => 1.09,
+            SpriteKind::WizardChestHigh => 1.09,
+            SpriteKind::WizardChestLow => 1.09,
             SpriteKind::HaniwaUrn => 1.09,
             SpriteKind::TerracottaChest => 1.09,
             SpriteKind::TerracottaStatue => 5.29,
@@ -664,6 +668,12 @@ impl SpriteKind {
             SpriteKind::HaniwaUrn => table("common.loot_tables.dungeon.haniwa.key"),
             SpriteKind::TerracottaChest => {
                 table("common.loot_tables.dungeon.terracotta.chest_terracotta")
+            },
+            SpriteKind::WizardChestHigh => {
+                table("common.loot_tables.dungeon.mage_tower.chest_wizard_high")
+            },
+            SpriteKind::WizardChestLow => {
+                table("common.loot_tables.dungeon.mage_tower.chest_wizard_low")
             },
             SpriteKind::Mud => table("common.loot_tables.sprite.mud"),
             SpriteKind::Grave => table("common.loot_tables.sprite.mud"),

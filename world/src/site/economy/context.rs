@@ -137,6 +137,7 @@ impl Environment {
                     SiteKind::DwarvenMine(_) => {},
                     SiteKind::Terracotta(_) => {},
                     SiteKind::Bridge(_) => {},
+                    SiteKind::MageTower(_) => {},
                     SiteKind::PirateHideout(_) => {},
                     SiteKind::RockCircle(_) => {},
                     SiteKind::TrollCave(_) => {},

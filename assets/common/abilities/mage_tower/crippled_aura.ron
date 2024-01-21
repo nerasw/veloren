@@ -1,0 +1,19 @@
+BasicAura(
+    buildup_duration: 0.8,
+    cast_duration: 0.6,
+    recover_duration: 0.2,
+    targets: OutOfGroup,
+    auras: [
+        (
+            kind: Crippled,
+            strength: 3.0,
+            duration: Some(5.0),
+            category: Magical,
+        ),
+    ],
+    aura_duration: Some(5.0),
+    range: 10.0,
+    energy_cost: 10.0,
+    scales_with_combo: false,
+    specifier: None,
+)

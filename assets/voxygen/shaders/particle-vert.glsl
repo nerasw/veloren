@@ -96,6 +96,8 @@ const int PHOENIX_BEAM = 56;
 const int PHOENIX_BUILD_UP_AIM = 57;
 const int CLAY_SHRAPNEL = 58;
 const int AIRFLOW = 59;
+const int CURSED_AURA = 60;
+const int CRIPPLED_AURA = 61;
 
 // meters per second squared (acceleration)
 const float earth_gravity = 9.807;
@@ -1014,6 +1016,28 @@ void main() {
                 vec4(1.1, 1.1, 1.1, 0.3),
                 // rotation
                 spin_in_axis(perp_axis, asin(inst_dir.z / length(inst_dir)) + PI / 2.0)
+            );
+            break;
+        case CURSED_AURA:
+            f_reflect = 0.0;
+            spiral_radius = start_end(1 - pow(abs(rand5), 5), 1) * length(inst_dir);
+            float cursed_col = 0.9 + 0.3 * rand3;
+            attr = Attr(
+                spiral_motion(vec3(0, 0, rand3 + 1), spiral_radius, lifetime, abs(rand0), rand1 * 2 * PI) + vec3(0, 0, rand2),
+                vec3(6 * abs(rand4) * (1 - slow_start(2)) * pow(spiral_radius / length(inst_dir), 0.5)),
+                vec4(cursed_col, 0.0, cursed_col, 1),
+                spin_in_axis(vec3(rand6, rand7, rand8), rand9 * 3)
+            );
+            break;
+        case CRIPPLED_AURA:
+            f_reflect = 0.0;
+            spiral_radius = start_end(1 - pow(abs(rand5), 5), 1) * length(inst_dir);
+            float crippled_col = 1.8 + 1.8 * rand3;
+            attr = Attr(
+                spiral_motion(vec3(0, 0, rand3 + 1), spiral_radius, lifetime, abs(rand0), rand1 * 2 * PI) + vec3(0, 0, rand2),
+                vec3(6 * abs(rand4) * (1 - slow_start(2)) * pow(spiral_radius / length(inst_dir), 0.5)),
+                vec4(crippled_col, 0.0, crippled_col, 1),
+                spin_in_axis(vec3(rand6, rand7, rand8), rand9 * 3)
             );
             break;
         default:

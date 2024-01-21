@@ -278,7 +278,7 @@ impl Civs {
         let world_dims = ctx.sim.get_aabr();
         for _ in 0..initial_civ_count * 3 {
             attempt(5, || {
-                let (loc, kind) = match ctx.rng.gen_range(0..115) {
+                let (loc, kind) = match ctx.rng.gen_range(0..120) {
                     0..=4 => {
                         if index.features().site2_giant_trees {
                             (
@@ -404,7 +404,17 @@ impl Civs {
                         )?,
                         SiteKind::Terracotta,
                     ),
-                    /*86..=91 => (
+                    86..=91 => (
+                        find_site_loc(
+                            &mut ctx,
+                            &ProximityRequirementsBuilder::new()
+                                .avoid_all_of(this.mage_tower_enemies(), 40)
+                                .finalize(&world_dims),
+                            &SiteKind::MageTower,
+                        )?,
+                        SiteKind::MageTower,
+                    ),
+                    /*92..=97 => (
                         find_site_loc(
                             &mut ctx,
                             &ProximityRequirementsBuilder::new()
@@ -414,7 +424,7 @@ impl Civs {
                         )?,
                         SiteKind::DwarvenMine,
                     ),
-                    92..=97 => (
+                    98..=103 => (
                         find_site_loc(
                             &mut ctx,
                             &ProximityRequirementsBuilder::new()
@@ -425,7 +435,7 @@ impl Civs {
                         )?,
                         SiteKind::Castle,
                     ),
-                    98..=103 => (SiteKind::Citadel, (&castle_enemies, 20)),
+                    104..=109 => (SiteKind::Citadel, (&castle_enemies, 20)),
                     */
                     _ => (
                         find_site_loc(
@@ -479,6 +489,7 @@ impl Civs {
                 SiteKind::RockCircle => (8i32, 3.0),
                 SiteKind::TrollCave => (4i32, 1.5),
                 SiteKind::Camp => (4i32, 1.5),
+                SiteKind::MageTower => (6i32, 6.0),
                 //SiteKind::DwarvenMine => (8i32, 3.0),
             };
 
@@ -597,6 +608,11 @@ impl Civs {
                             wpos,
                         ))
                     },
+                    SiteKind::MageTower => WorldSite::mage_tower(site2::Site::generate_mage_tower(
+                        &Land::from_sim(ctx.sim),
+                        &mut rng,
+                        wpos,
+                    )),
                     SiteKind::JungleRuin => WorldSite::jungle_ruin(
                         site2::Site::generate_jungle_ruin(&Land::from_sim(ctx.sim), &mut rng, wpos),
                     ),
@@ -1626,6 +1642,13 @@ impl Civs {
             _ => Some(s.center),
         })
     }
+
+    fn mage_tower_enemies(&self) -> impl Iterator<Item = Vec2<i32>> + '_ {
+        self.sites().filter_map(|s| match s.kind {
+            SiteKind::Tree | SiteKind::GiantTree => None,
+            _ => Some(s.center),
+        })
+    }
 }
 
 /// Attempt to find a path between two locations
@@ -1966,6 +1989,7 @@ pub enum SiteKind {
     RockCircle,
     TrollCave,
     Camp,
+    MageTower,
     //DwarvenMine,
     JungleRuin,
 }
@@ -2061,6 +2085,11 @@ impl SiteKind {
                 },
                 SiteKind::Camp => {
                     !chunk.near_cliffs() && on_flat_terrain() && !chunk.river.near_water()
+                },
+                SiteKind::MageTower => {
+                    (-0.3..0.4).contains(&chunk.temp)
+                        && !chunk.near_cliffs()
+                        && !chunk.river.near_water()
                 },
                 SiteKind::DesertCity => {
                     (0.9..1.0).contains(&chunk.temp) && !chunk.near_cliffs() && suitable_for_town()

@@ -84,6 +84,7 @@ pub enum SiteKind {
     RockCircle(site2::Site),
     TrollCave(site2::Site),
     Camp(site2::Site),
+    MageTower(site2::Site),
 }
 
 impl Site {
@@ -192,6 +193,13 @@ impl Site {
         }
     }
 
+    pub fn mage_tower(mt: site2::Site) -> Self {
+        Self {
+            kind: SiteKind::MageTower(mt),
+            economy: Economy::default(),
+        }
+    }
+
     pub fn desert_city(dc: site2::Site) -> Self {
         Self {
             kind: SiteKind::DesertCity(dc),
@@ -255,6 +263,7 @@ impl Site {
             SiteKind::RockCircle(rc) => rc.radius(),
             SiteKind::TrollCave(tc) => tc.radius(),
             SiteKind::Camp(cp) => cp.radius(),
+            SiteKind::MageTower(mt) => mt.radius(),
             SiteKind::DesertCity(dc) => dc.radius(),
             SiteKind::ChapelSite(p) => p.radius(),
             SiteKind::DwarvenMine(dm) => dm.radius(),
@@ -282,6 +291,7 @@ impl Site {
             SiteKind::RockCircle(rc) => rc.origin,
             SiteKind::TrollCave(tc) => tc.origin,
             SiteKind::Camp(cp) => cp.origin,
+            SiteKind::MageTower(mt) => mt.origin,
             SiteKind::DesertCity(dc) => dc.origin,
             SiteKind::ChapelSite(p) => p.origin,
             SiteKind::DwarvenMine(dm) => dm.origin,
@@ -309,6 +319,7 @@ impl Site {
             SiteKind::RockCircle(rc) => rc.spawn_rules(wpos),
             SiteKind::TrollCave(tc) => tc.spawn_rules(wpos),
             SiteKind::Camp(cp) => cp.spawn_rules(wpos),
+            SiteKind::MageTower(mt) => mt.spawn_rules(wpos),
             SiteKind::DesertCity(dc) => dc.spawn_rules(wpos),
             SiteKind::ChapelSite(p) => p.spawn_rules(wpos),
             SiteKind::DwarvenMine(dm) => dm.spawn_rules(wpos),
@@ -336,6 +347,7 @@ impl Site {
             SiteKind::RockCircle(rc) => rc.name(),
             SiteKind::TrollCave(tc) => tc.name(),
             SiteKind::Camp(cp) => cp.name(),
+            SiteKind::MageTower(mt) => mt.name(),
             SiteKind::DesertCity(dc) => dc.name(),
             SiteKind::ChapelSite(p) => p.name(),
             SiteKind::Terracotta(tr) => tr.name(),
@@ -383,6 +395,7 @@ impl Site {
             SiteKind::RockCircle(rc) => rc.render(canvas, dynamic_rng),
             SiteKind::TrollCave(tc) => tc.render(canvas, dynamic_rng),
             SiteKind::Camp(cp) => cp.render(canvas, dynamic_rng),
+            SiteKind::MageTower(mt) => mt.render(canvas, dynamic_rng),
             SiteKind::DesertCity(dc) => dc.render(canvas, dynamic_rng),
             SiteKind::ChapelSite(p) => p.render(canvas, dynamic_rng),
             SiteKind::Terracotta(tr) => tr.render(canvas, dynamic_rng),
@@ -424,6 +437,7 @@ impl Site {
             SiteKind::RockCircle(_) => {},
             SiteKind::TrollCave(_) => {},
             SiteKind::Camp(_) => {},
+            SiteKind::MageTower(_) => {},
             SiteKind::DesertCity(_) => {},
             SiteKind::ChapelSite(p) => p.apply_supplement(dynamic_rng, wpos2d, supplement),
             SiteKind::Terracotta(tr) => tr.apply_supplement(dynamic_rng, wpos2d, supplement),
@@ -465,6 +479,7 @@ impl Site {
             SiteKind::RockCircle(site2) => Some(site2),
             SiteKind::TrollCave(site2) => Some(site2),
             SiteKind::Camp(site2) => Some(site2),
+            SiteKind::MageTower(site2) => Some(site2),
             SiteKind::Tree(_) => None,
             SiteKind::DesertCity(site2) => Some(site2),
             SiteKind::ChapelSite(site2) => Some(site2),

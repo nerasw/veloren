@@ -289,7 +289,7 @@
             protection: Some(Normal(20.0)),
         ),
         "Velorite Battlemage": (
-            protection: Some(Normal(100.0)),
+            protection: Some(Normal(600.0)),
         ),
         "Witch": (
             protection: Some(Normal(120.0)),

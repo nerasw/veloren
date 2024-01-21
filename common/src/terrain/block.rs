@@ -368,6 +368,8 @@ impl Block {
                 | SpriteKind::CoralChest
                 | SpriteKind::HaniwaUrn
                 | SpriteKind::TerracottaChest
+                | SpriteKind::WizardChestHigh
+                | SpriteKind::WizardChestLow
                 | SpriteKind::Crate => Some(rtsim::ChunkResource::Loot),
             _ => None,
         }
@@ -384,6 +386,7 @@ impl Block {
                 SpriteKind::Ember | SpriteKind::FireBlock => 20,
                 SpriteKind::WallLamp
                 | SpriteKind::WallLampSmall
+                | SpriteKind::WallLampWizard
                 | SpriteKind::WallSconce
                 | SpriteKind::FireBowlGround
                 | SpriteKind::ChristmasOrnament
@@ -519,6 +522,8 @@ impl Block {
                 | SpriteKind::HaniwaTrapTriggered
                 | SpriteKind::ChestBuried
                 | SpriteKind::TerracottaChest
+                | SpriteKind::WizardChestHigh
+                | SpriteKind::WizardChestLow
                 | SpriteKind::SeaDecorBlock
                 | SpriteKind::SeaDecorChain
                 | SpriteKind::SeaDecorWindowHor

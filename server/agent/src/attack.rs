@@ -5036,6 +5036,127 @@ impl<'a> AgentData<'a> {
         }
     }
 
+    pub fn handle_mage_attack(
+        &self,
+        agent: &mut Agent,
+        controller: &mut Controller,
+        attack_data: &AttackData,
+        tgt_data: &TargetData,
+        read_data: &ReadData,
+        rng: &mut impl Rng,
+    ) {
+        const DESIRED_ENERGY_LEVEL: f32 = 50.0;
+        const DESIRED_COMBO_LEVEL: u32 = 8;
+
+        let line_of_sight_with_target = || {
+            entities_have_line_of_sight(
+                self.pos,
+                self.body,
+                self.scale,
+                tgt_data.pos,
+                tgt_data.body,
+                tgt_data.scale,
+                read_data,
+            )
+        };
+
+        // Logic to use abilities
+        if attack_data.dist_sqrd > attack_data.min_attack_dist.powi(2)
+            && line_of_sight_with_target()
+        {
+            // If far enough away, and can see target, check which skill is appropriate to
+            // use
+            if self.energy.current() > DESIRED_ENERGY_LEVEL
+                && read_data
+                    .combos
+                    .get(*self.entity)
+                    .map_or(false, |c| c.counter() >= DESIRED_COMBO_LEVEL)
+            {
+                // If have enough energy and combo to use crippled aura, do so
+                controller.push_basic_input(InputKind::Secondary);
+            } else if self.energy.current() > DESIRED_ENERGY_LEVEL {
+                // Use cursed aura if sufficient energy
+                controller.push_basic_input(InputKind::Ability(0));
+            } else {
+                // If low on energy, use primary to attempt to regen energy
+                // Or if at desired energy level but not able/willing to ward, just attack
+                controller.push_basic_input(InputKind::Primary);
+            }
+        } else if attack_data.dist_sqrd < (2.0 * attack_data.min_attack_dist).powi(2) {
+            if self.body.map_or(false, |b| b.is_humanoid())
+                && !matches!(self.char_state, CharacterState::BasicAura(c) if !matches!(c.stage_section, StageSection::Recover))
+            {
+                // Else use crippled aura
+                controller.push_basic_input(InputKind::Secondary);
+            } else if attack_data.angle < 15.0 {
+                controller.push_basic_input(InputKind::Primary);
+            }
+        }
+        // Logic to move. Intentionally kept separate from ability logic where possible
+        // so duplicated work is less necessary.
+        if attack_data.dist_sqrd < (2.0 * attack_data.min_attack_dist).powi(2) {
+            // Attempt to move away from target if too close
+            if let Some((bearing, speed)) = agent.chaser.chase(
+                &*read_data.terrain,
+                self.pos.0,
+                self.vel.0,
+                tgt_data.pos.0,
+                TraversalConfig {
+                    min_tgt_dist: 1.25,
+                    ..self.traversal_config
+                },
+            ) {
+                controller.inputs.move_dir =
+                    -bearing.xy().try_normalized().unwrap_or_else(Vec2::zero) * speed;
+            }
+        } else if attack_data.dist_sqrd < MAX_PATH_DIST.powi(2) {
+            // Else attempt to circle target if neither too close nor too far
+            if let Some((bearing, speed)) = agent.chaser.chase(
+                &*read_data.terrain,
+                self.pos.0,
+                self.vel.0,
+                tgt_data.pos.0,
+                TraversalConfig {
+                    min_tgt_dist: 1.25,
+                    ..self.traversal_config
+                },
+            ) {
+                if line_of_sight_with_target() && attack_data.angle < 45.0 {
+                    controller.inputs.move_dir = bearing
+                        .xy()
+                        .rotated_z(rng.gen_range(0.5..1.57))
+                        .try_normalized()
+                        .unwrap_or_else(Vec2::zero)
+                        * speed;
+                } else {
+                    // Unless cannot see target, then move towards them
+                    controller.inputs.move_dir =
+                        bearing.xy().try_normalized().unwrap_or_else(Vec2::zero) * speed;
+                    self.jump_if(bearing.z > 1.5, controller);
+                    controller.inputs.move_z = bearing.z;
+                }
+            }
+            // Sometimes try to roll
+            if self.body.map(|b| b.is_humanoid()).unwrap_or(false)
+                && !matches!(self.char_state, CharacterState::BasicAura(_))
+                && attack_data.dist_sqrd < 16.0f32.powi(2)
+                && rng.gen::<f32>() < 0.01
+            {
+                controller.push_basic_input(InputKind::Roll);
+            }
+        } else {
+            // If too far, move towards target
+            self.path_toward_target(
+                agent,
+                controller,
+                tgt_data.pos.0,
+                read_data,
+                Path::Partial,
+                None,
+            );
+        }
+    }
+
     pub fn handle_deadwood(
         &self,
         agent: &mut Agent,

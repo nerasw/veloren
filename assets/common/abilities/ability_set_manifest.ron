@@ -1055,4 +1055,12 @@
         secondary: Simple(None, "common.abilities.custom.jiangshi.teleport"),
         abilities: [],
     ),
+    // MageTower
+    Custom("Mage Sceptre"): (
+        primary: Simple(None, "common.abilities.sceptre.lifestealbeam"),
+        secondary: Simple(None, "common.abilities.mage_tower.crippled_aura"),
+        abilities: [
+            Simple(None, "common.abilities.mage_tower.cursed_aura"),
+        ],
+    ),
 })

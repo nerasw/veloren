@@ -1848,4 +1848,8 @@
         vox_spec: ("weapon.sceptre.sceptre_cursekeeper", (-5.5, -4.5, -3.0)),
         color: None
     ),
+    Tool("common.items.npc_weapons.sceptre.sceptre_velorite_mage"): (
+        vox_spec: ("weapon.sceptre.ore-nature", (-2.0, -6.0, -5.0)),
+        color: None
+    ),
 })

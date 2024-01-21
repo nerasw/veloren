@@ -1,0 +1,31 @@
+#![enable(unwrap_newtypes)]
+
+[
+    (
+        specifier: "world.structure.spots.mage_tower",
+        center: (32, 32, 19),
+        custom_indices: {
+            8: Filled(Air, (r: 255, g: 255, b: 255)),
+            10: Sprite(WitchWindow),
+            11: RotatedSprite(Window1, 0),
+            12: RotatedSprite(Window1, 2),
+            44: Filled(GlowingRock, (r: 46, g: 10, b: 27)),
+            45: Filled(GlowingRock, (r: 0, g: 204, b: 204)),
+            176: Filled(GlowingRock, (r: 204, g: 199, b: 172)),
+            233: RotatedSprite(DoorDark, 2),
+            234: RotatedSprite(DoorDark, 6),
+            249: RotatedSprite(DoorDark, 8),
+            250: RotatedSprite(DoorDark, 4),
+            240: RotatedSprite(WallLampWizard, 0),
+            242: RotatedSprite(WallLampWizard, 2),
+            244: RotatedSprite(WallLampWizard, 4),
+            246: RotatedSprite(WallLampWizard, 6),
+            252: Keyhole("common.items.keys.rusty_tower_key"),
+            253: Sprite(KeyDoor),
+            235: Sprite(Candle),
+            127: Sprite(WizardChestLow),
+            128: Sprite(WizardChestHigh),
+
+            },
+    ),
+]

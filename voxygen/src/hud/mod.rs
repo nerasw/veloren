@@ -5346,6 +5346,8 @@ pub fn get_sprite_desc(sprite: SpriteKind, localized_strings: &Localization) -> 
         SpriteKind::ChestBuried
         | SpriteKind::Chest
         | SpriteKind::CoralChest
+        | SpriteKind::WizardChestLow
+        | SpriteKind::WizardChestHigh
         | SpriteKind::DungeonChest0
         | SpriteKind::DungeonChest1
         | SpriteKind::DungeonChest2

@@ -38,8 +38,9 @@ impl Site {
             | SiteKind::TrollCave(_)
             | SiteKind::Camp(_)
             | SiteKind::Haniwa(_)
-            | SiteKind::Adlet(_) => Some(false),
-            SiteKind::DwarvenMine(_) => Some(false),
+            | SiteKind::MageTower(_)
+            | SiteKind::Adlet(_)
+            | SiteKind::DwarvenMine(_) => Some(false),
             // Neutral
             SiteKind::Settlement(_)
             | SiteKind::Castle(_)

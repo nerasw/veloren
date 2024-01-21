@@ -1725,6 +1725,38 @@ impl Site {
         site
     }
 
+    pub fn generate_mage_tower(land: &Land, rng: &mut impl Rng, origin: Vec2<i32>) -> Self {
+        let mut rng = reseed(rng);
+        let mut site = Site {
+            origin,
+            //name: "".to_string(),
+            name: "debug".to_string(),
+            ..Site::default()
+        };
+        let size = 8.0 as i32;
+        let aabr = Aabr {
+            min: Vec2::broadcast(-size),
+            max: Vec2::broadcast(size),
+        };
+        {
+            let mage_tower = plot::MageTower::generate(land, &mut reseed(&mut rng), &site, aabr);
+            let mage_tower_alt = mage_tower.alt;
+            let plot = site.create_plot(Plot {
+                kind: PlotKind::MageTower(mage_tower),
+                root_tile: aabr.center(),
+                tiles: aabr_tiles(aabr).collect(),
+                seed: rng.gen(),
+            });
+
+            site.blit_aabr(aabr, Tile {
+                kind: TileKind::Building,
+                plot: Some(plot),
+                hard_alt: Some(mage_tower_alt),
+            });
+        }
+        site
+    }
+
     pub fn generate_bridge(
         land: &Land,
         index: IndexRef,
@@ -2100,6 +2132,7 @@ impl Site {
                 PlotKind::RockCircle(rock_circle) => rock_circle.render_collect(self, canvas),
                 PlotKind::TrollCave(troll_cave) => troll_cave.render_collect(self, canvas),
                 PlotKind::Camp(camp) => camp.render_collect(self, canvas),
+                PlotKind::MageTower(mage_tower) => mage_tower.render_collect(self, canvas),
                 PlotKind::Plaza | PlotKind::Road(_) => continue,
                 // _ => continue, Avoid using a wildcard here!!
             };
