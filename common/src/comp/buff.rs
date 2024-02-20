@@ -171,6 +171,8 @@ pub enum BuffKind {
     /// 33.3% and energy reward reduced by 200%. Energy reward can't be
     /// reduced by more than 200%, to a minimum value of -100%.
     Heatstroke,
+    ///
+    AbsorbShield,
     // Complex, non-obvious buffs
     /// Changed into another body.
     Polymorphed,
@@ -233,7 +235,8 @@ impl BuffKind {
             | BuffKind::Parried
             | BuffKind::PotionSickness
             | BuffKind::Heatstroke => BuffDescriptor::SimpleNegative,
-            BuffKind::Polymorphed => BuffDescriptor::Complex,
+            BuffKind::Polymorphed
+            | BuffKind::AbsorbShield => BuffDescriptor::Complex,
         }
     }
 
@@ -463,6 +466,24 @@ impl BuffKind {
                 BuffEffect::MovementSpeed(1.0 - nn_scaling(data.strength) * 0.5),
                 BuffEffect::EnergyReward((1.0 - nn_scaling(data.strength) * 3.0).max(-1.0)),
             ],
+            BuffKind::AbsorbShield => vec![
+                data.energy_shield_data.map_or(
+                    BuffEffect::ManaAbsorbtion{
+                        percent_of_dmg_absorbed: 1.0,
+                        coefficient_of_absorbtion: 1.0,
+                },
+                    |esd| 
+                    BuffEffect::ManaAbsorbtion{
+                        percent_of_dmg_absorbed: esd.percentage_of_dmg_absorbed.map_or(1.0, |f| f),
+                        coefficient_of_absorbtion:
+                        if !esd.apply_before_armor.is_some_and(|f| f) {
+                            -data.strength
+                        }
+                        else {
+                            data.strength
+                        }},
+                )
+            ],
         }
     }
 
@@ -490,11 +511,19 @@ pub struct BuffData {
     pub secondary_duration: Option<Secs>,
     /// Used to add random data to buffs if needed (e.g. polymorphed)
     pub misc_data: Option<MiscBuffData>,
+    ///
+    pub energy_shield_data: Option<EnergyShieldBuffData>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum MiscBuffData {
     Body(Body),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct EnergyShieldBuffData {
+    pub apply_before_armor: Option<bool>,
+    pub percentage_of_dmg_absorbed: Option<f32>,
 }
 
 impl BuffData {
@@ -505,6 +534,7 @@ impl BuffData {
             delay: None,
             secondary_duration: None,
             misc_data: None,
+            energy_shield_data: None
         }
     }
 
@@ -520,6 +550,11 @@ impl BuffData {
 
     pub fn with_misc_data(mut self, misc_data: MiscBuffData) -> Self {
         self.misc_data = Some(misc_data);
+        self
+    }
+
+    pub fn with_e_shield_data(mut self, energy_shield_data: EnergyShieldBuffData) -> Self {
+        self.energy_shield_data = Some(energy_shield_data);
         self
     }
 }
@@ -612,6 +647,13 @@ pub enum BuffEffect {
     EnergyReward(f32),
     /// Add an effect to the entity when damaged by an attack
     DamagedEffect(DamagedEffect),
+    ///
+    ManaAbsorbtion{
+        percent_of_dmg_absorbed: f32,
+        /// how many points of dmg absorbed per point of energy drained
+        /// if negative - applied past armor dmg reduction
+        coefficient_of_absorbtion: f32,
+    },
 }
 
 /// Actual de/buff.

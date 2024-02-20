@@ -756,5 +756,12 @@ fn execute_effect(
             stat.energy_reward_modifier *= er;
         },
         BuffEffect::DamagedEffect(effect) => stat.effects_on_damaged.push(effect.clone()),
+        BuffEffect::ManaAbsorbtion{
+            percent_of_dmg_absorbed,
+            coefficient_of_absorbtion
+        } =>{
+            stat.energy_absorbtion_coefficient = *coefficient_of_absorbtion;
+            stat.energy_absorbtion_percent = *percent_of_dmg_absorbed;
+        }
     };
 }

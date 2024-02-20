@@ -156,7 +156,17 @@ impl Attack {
                 .map_or(0.0, |s| s.mitigations_penetration)
                 .clamp(0.0, 1.0);
             let raw_damage_reduction =
-                Damage::compute_damage_reduction(Some(damage), target.inventory, target.stats, msm);
+                Damage::compute_damage_reduction(Some(damage),
+                target.stats.map_or_else(
+                    || target.inventory,
+                    |s| if (s.energy_absorbtion_coefficient.abs() > 0.0) && (s.energy_absorbtion_coefficient.is_sign_negative()) {
+                        target.inventory
+                    } else {
+                        // positive sign means we should compute DR withour armor to apply 
+                        None
+                    }
+                ),
+                target.stats, msm);
             let damage_reduction = (1.0 - attacker_penetration) * raw_damage_reduction;
             let block_reduction =
                 if let (Some(char_state), Some(ori)) = (target.char_state, target.ori) {
@@ -279,6 +289,27 @@ impl Attack {
                 time,
                 damage_instance,
             );
+            let _mana_soaked_due_shield_amount;
+            if let Some(stats) = target.stats {
+                if stats.energy_absorbtion_coefficient.abs() > 0.0 {
+                    let converted_amount = change.amount  / stats.energy_absorbtion_coefficient.abs();
+                    let curr_energy = target.energy.map_or(0.0, |e| e.current());
+                    if converted_amount > curr_energy {
+                        converted_amount -= curr_energy;
+                        change.amount -= converted_amount * stats.energy_absorbtion_coefficient.abs();
+                    } else {
+                        change.amount = 0.0;
+                    }
+                    _mana_soaked_due_shield_amount = converted_amount;
+                    // energy 1st
+                    let energy_absorb_pool =
+                        target.energy.map_or(0.0, |e| e.current())
+                        * stats.energy_absorbtion_coefficient.abs();
+                    if energy_absorb_pool < change.amount {
+                    }
+                    change.amount -= energy_absorb_pool;
+                }
+            };
             let applied_damage = -change.amount;
             accumulated_damage += applied_damage;
 

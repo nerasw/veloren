@@ -75,6 +75,10 @@ pub struct Stats {
     pub energy_reward_modifier: f32,
     /// This creates effects when the entity is damaged
     pub effects_on_damaged: Vec<DamagedEffect>,
+    pub absorbtion: f32,
+    /// how much dmg can each point of energy soak, if negative - applied past armor dmg reduction
+    pub energy_absorbtion_coefficient: f32,
+    pub energy_absorbtion_percent: f32,
 }
 
 impl Stats {
@@ -100,6 +104,9 @@ impl Stats {
             mitigations_penetration: 0.0,
             energy_reward_modifier: 1.0,
             effects_on_damaged: Vec::new(),
+            absorbtion: 0.0,
+            energy_absorbtion_coefficient: 0.0,
+            energy_absorbtion_percent: 0.0,
         }
     }
 
