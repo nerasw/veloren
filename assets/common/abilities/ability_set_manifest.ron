@@ -1061,6 +1061,7 @@
         secondary: Simple(None, "common.abilities.mage_tower.crippled_aura"),
         abilities: [
             Simple(None, "common.abilities.mage_tower.cursed_aura"),
+            Simple(None, "common.abilities.mage_tower.mana_barrier"),
         ],
     ),
 })

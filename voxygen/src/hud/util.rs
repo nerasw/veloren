@@ -239,6 +239,7 @@ pub fn consumable_desc(effects: &Effects, i18n: &Localization) -> Vec<String> {
                         | BuffKind::Flame
                         | BuffKind::Frigid
                         | BuffKind::Lifesteal
+                        | BuffKind::AbsorbShield
                         // | BuffKind::SalamanderAspect
                         | BuffKind::ImminentCritical
                         | BuffKind::Fury
@@ -296,7 +297,8 @@ pub fn consumable_desc(effects: &Effects, i18n: &Localization) -> Vec<String> {
                             | BuffKind::Defiance
                             | BuffKind::Bloodfeast
                             | BuffKind::Berserk
-                            | BuffKind::Heatstroke => Cow::Borrowed(""),
+                            | BuffKind::Heatstroke
+                            | BuffKind::AbsorbShield => Cow::Borrowed(""),
                         }
                     } else if let BuffKind::Saturation
                     | BuffKind::Regeneration

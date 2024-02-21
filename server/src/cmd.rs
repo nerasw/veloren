@@ -4375,7 +4375,8 @@ fn cast_buff_complex(
         | BuffKind::Poisoned
         | BuffKind::Parried
         | BuffKind::PotionSickness
-        | BuffKind::Heatstroke => unreachable!("is_simple() above"),
+        | BuffKind::Heatstroke
+        | BuffKind::AbsorbShield => unreachable!("is_simple() above"),
     };
 
     let buffdata = BuffData::new(strength, Some(Secs(duration))).with_misc_data(misc_data);

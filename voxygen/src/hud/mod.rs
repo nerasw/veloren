@@ -5215,6 +5215,7 @@ pub fn get_buff_image(buff: BuffKind, imgs: &Imgs) -> conrod_core::image::Id {
         BuffKind::Flame => imgs.buff_flame,
         BuffKind::Frigid => imgs.buff_frigid,
         BuffKind::Lifesteal => imgs.buff_lifesteal,
+        BuffKind::AbsorbShield => imgs.buff_potion_0,
         // TODO: Get image
         // BuffKind::SalamanderAspect => imgs.debuff_burning_0,
         BuffKind::ImminentCritical => imgs.buff_imminentcritical,
@@ -5266,6 +5267,7 @@ pub fn get_buff_title(buff: BuffKind, localized_strings: &Localization) -> Cow<s
         BuffKind::Defiance => localized_strings.get_msg("buff-title-defiance"),
         BuffKind::Bloodfeast => localized_strings.get_msg("buff-title-bloodfeast"),
         BuffKind::Berserk => localized_strings.get_msg("buff-title-berserk"),
+        BuffKind::AbsorbShield => localized_strings.get_msg("buff-title-potion"),
         // Debuffs
         BuffKind::Bleeding => localized_strings.get_msg("buff-title-bleed"),
         BuffKind::Cursed => localized_strings.get_msg("buff-title-cursed"),
@@ -5313,6 +5315,7 @@ pub fn get_buff_desc(buff: BuffKind, data: BuffData, localized_strings: &Localiz
         BuffKind::Defiance => localized_strings.get_msg("buff-desc-defiance"),
         BuffKind::Bloodfeast => localized_strings.get_msg("buff-desc-bloodfeast"),
         BuffKind::Berserk => localized_strings.get_msg("buff-desc-berserk"),
+        BuffKind::AbsorbShield => localized_strings.get_msg("buff-desc-potion"),
         // Debuffs
         BuffKind::Bleeding => localized_strings.get_msg("buff-desc-bleed"),
         BuffKind::Cursed => localized_strings.get_msg("buff-desc-cursed"),

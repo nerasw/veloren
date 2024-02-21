@@ -24,6 +24,7 @@ use crate::{
     uid::{IdMaps, Uid},
     util::Dir,
 };
+use num_traits::Signed;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use specs::{Entity as EcsEntity, ReadStorage};
@@ -149,13 +150,15 @@ impl Attack {
         msm: &MaterialStatManifest,
         emitters: &mut impl EmitExt<ParryHookEvent>,
         mut emit_outcome: impl FnMut(Outcome),
+        raw_damage_reduction: Option<f32>,
     ) -> f32 {
         if damage.value > 0.0 {
             let attacker_penetration = attacker
                 .and_then(|a| a.stats)
                 .map_or(0.0, |s| s.mitigations_penetration)
                 .clamp(0.0, 1.0);
-            let raw_damage_reduction =
+            
+            let damage_reduction = (1.0 - attacker_penetration) * raw_damage_reduction.map_or(
                 Damage::compute_damage_reduction(Some(damage),
                 target.stats.map_or_else(
                     || target.inventory,
@@ -166,8 +169,8 @@ impl Attack {
                         None
                     }
                 ),
-                target.stats, msm);
-            let damage_reduction = (1.0 - attacker_penetration) * raw_damage_reduction;
+                target.stats, msm),
+                |rdr| rdr);
             let block_reduction =
                 if let (Some(char_state), Some(ori)) = (target.char_state, target.ori) {
                     if ori.look_vec().angle_between(-dir.with_z(0.0)) < char_state.block_angle() {
@@ -279,8 +282,9 @@ impl Attack {
                 msm,
                 emitters,
                 &mut emit_outcome,
+                None,
             );
-            let change = damage.damage.calculate_health_change(
+            let mut change = damage.damage.calculate_health_change(
                 damage_reduction,
                 attacker.map(|x| x.into()),
                 precision_mult,
@@ -289,25 +293,51 @@ impl Attack {
                 time,
                 damage_instance,
             );
-            let _mana_soaked_due_shield_amount;
             if let Some(stats) = target.stats {
-                if stats.energy_absorbtion_coefficient.abs() > 0.0 {
-                    let converted_amount = change.amount  / stats.energy_absorbtion_coefficient.abs();
-                    let curr_energy = target.energy.map_or(0.0, |e| e.current());
-                    if converted_amount > curr_energy {
-                        converted_amount -= curr_energy;
-                        change.amount -= converted_amount * stats.energy_absorbtion_coefficient.abs();
+                if stats.energy_absorbtion_coefficient != 0.0 {
+                    let mana_soaked_due_shield_amount;
+                    let current_mana = target.energy.map_or(0.0, |e| e.current());
+                    let energy_absorb_pool =
+                        current_mana * stats.energy_absorbtion_coefficient.abs();
+                    if energy_absorb_pool < change.amount.abs() {
+                        mana_soaked_due_shield_amount = current_mana;
+                        let dmg_absorbed = energy_absorb_pool;
+                        // Compute raw_DR for dmg that went thru shield;
+                        // no DR from stats,
+                        // as it should already be applied before
+                        let raw_dr = Some(Damage::compute_damage_reduction(
+                            Some(damage.damage),
+                            if stats.energy_absorbtion_coefficient.is_negative() {
+                                // shield work past armor, so DR already was applied
+                                None
+                            } else {
+                                // shield work BEFORE armor - apply armor DR
+                                target.inventory
+                            },
+                            None,
+                            msm));
+                        let damage_reduction = Attack::compute_damage_reduction(
+                            attacker.as_ref(),
+                            target,
+                            attack_source,
+                            dir,
+                            damage.damage,
+                            msm,
+                            emitters,
+                            &mut emit_outcome,
+                            raw_dr,
+                        );
+                        change.amount = (change.amount + dmg_absorbed) * 1.0 - damage_reduction;
                     } else {
+                        // mana absorbed all dmg
+                        mana_soaked_due_shield_amount = -change.amount
+                            / stats.energy_absorbtion_coefficient.abs();
                         change.amount = 0.0;
                     }
-                    _mana_soaked_due_shield_amount = converted_amount;
-                    // energy 1st
-                    let energy_absorb_pool =
-                        target.energy.map_or(0.0, |e| e.current())
-                        * stats.energy_absorbtion_coefficient.abs();
-                    if energy_absorb_pool < change.amount {
-                    }
-                    change.amount -= energy_absorb_pool;
+                    emitters.emit(EnergyChangeEvent {
+                        entity: target.entity,
+                        change: -mana_soaked_due_shield_amount,
+                    });
                 }
             };
             let applied_damage = -change.amount;
